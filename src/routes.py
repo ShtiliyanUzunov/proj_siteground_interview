@@ -40,7 +40,7 @@ def caption():
 
     try:
         image = Image.open(image_file.stream).convert("RGB")
-        image = resize_to_max_dim(image, 1024)
+        image = resize_to_max_dim(image, int(os.getenv("MAX_IMAGE_SIZE", 1024)))
 
         start = time.time()
         generated_caption, model_name = caption_fn(image)
