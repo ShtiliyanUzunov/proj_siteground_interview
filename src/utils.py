@@ -1,5 +1,6 @@
 from PIL import Image
 
+
 def resize_to_max_dim(image: Image.Image, max_dim: int = 1024) -> Image.Image:
     """
     Resize an image so that neither width nor height exceeds max_dim,

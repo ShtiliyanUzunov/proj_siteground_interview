@@ -1,0 +1,24 @@
+The tested endpoint is [POST] http://localhost:5000/caption.
+The tests are done on a 8GB GPU Machine with BLIP2.
+
+========== Test Summary ==========
+Total users        : 1
+Spawn rate         : 1.0
+Total requests sent: 25
+Total failures     : 0
+Average response time: 0.719 seconds
+==================================
+========== Test Summary ==========
+Total users        : 5
+Spawn rate         : 5.0
+Total requests sent: 25
+Total failures     : 0
+Average response time: 2.630 seconds
+==================================
+========== Test Summary ==========
+Total users        : 10
+Spawn rate         : 10.0
+Total requests sent: 50
+Total failures     : 0
+Average response time: 6.119 seconds
+==================================

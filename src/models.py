@@ -108,3 +108,39 @@ def ms_git_generate_caption(image):
     caption = processor.batch_decode(generated_ids, skip_special_tokens=True)[0]
 
     return caption
+
+
+def init_caption_model():
+    """
+    This method ensures that the model is ready for work before the first request.
+    It loads the model based on the environment variable MODEL_NAME.
+    """
+    model_name = os.environ.get("MODEL_NAME")
+    if model_name not in ["BLIP2", "BLIPINSTRUCT", "LLAVA", "MSGIT"]:
+        raise ValueError(f"Unsupported model name: {model_name}")
+
+    loader_mapping = {
+        "BLIP2": Blip2ModelLoader,
+        "BLIPINSTRUCT": InstructBlipModelLoader,
+        "LLAVA": LlavaModelLoader,
+        "MSGIT": MsGitModelLoader
+    }
+
+    loader = loader_mapping.get(model_name)
+    loader.get_instance()
+
+
+def caption_fn(image):
+    model_name = os.environ.get("MODEL_NAME")
+    if model_name not in ["BLIP2", "BLIPINSTRUCT", "LLAVA", "MSGIT"]:
+        raise ValueError(f"Unsupported model name: {model_name}")
+
+    fn_mapping = {
+        "BLIP2": blip2_generate_caption,
+        "BLIPINSTRUCT": instructblip_generate_caption,
+        "LLAVA": llava_generate_caption,
+        "MSGIT": ms_git_generate_caption
+    }
+
+    fn = fn_mapping.get(model_name)
+    return fn(image), model_name

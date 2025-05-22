@@ -1,30 +1,14 @@
+import logging
 import os
 import time
 from flask import Blueprint, request, jsonify
 from PIL import Image
 
 from utils import resize_to_max_dim
-from models import instructblip_generate_caption
-from models import llava_generate_caption
-from models import ms_git_generate_caption
-from models import blip2_generate_caption
+from models import caption_fn
 
 api_bp = Blueprint("api", __name__)
-
-def caption_fn(image):
-    model_name = os.environ.get("MODEL_NAME")
-    if model_name not in ["BLIP2", "BLIPINSTRUCT", "LLAVA", "MSGIT"]:
-        raise ValueError(f"Unsupported model name: {model_name}")
-    
-    fn_mapping = {
-        "BLIP2": blip2_generate_caption,
-        "BLIPINSTRUCT": instructblip_generate_caption,
-        "LLAVA": llava_generate_caption,
-        "MSGIT": ms_git_generate_caption
-    }
-
-    fn = fn_mapping.get(model_name)
-    return fn(image), model_name
+logger = logging.getLogger(__name__)
 
 @api_bp.route("/ping", methods=["GET"])
 def ping():
@@ -45,6 +29,8 @@ def caption():
         start = time.time()
         generated_caption, model_name = caption_fn(image)
         processing_time = time.time() - start
+        
+        logger.info(f"Image processed in {processing_time:.2f} seconds using model: {model_name}")
 
         return jsonify({
             "caption": generated_caption,
@@ -53,4 +39,5 @@ def caption():
         }), 200
 
     except Exception as exc:
-        return jsonify({"error": str(exc)}), 500
+        logger.error(f"Error processing image: {exc}")
+        return jsonify({"error": "Something went wrong on our side..."}), 500
