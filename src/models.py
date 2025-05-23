@@ -1,4 +1,5 @@
 import os
+import time
 import torch
 from transformers import BlipProcessor, BlipForConditionalGeneration
 from transformers import AutoProcessor, AutoModelForCausalLM
@@ -143,4 +144,9 @@ def caption_fn(image):
     }
 
     fn = fn_mapping.get(model_name)
-    return fn(image), model_name
+
+    start = time.time()
+    result = fn(image)
+    processing_time = time.time() - start
+
+    return result, model_name, processing_time

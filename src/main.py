@@ -3,6 +3,7 @@ from dotenv import load_dotenv
 load_dotenv()
 
 import logging
+from tasks import TaskProcessor
 from logging_config import log_service_config, setup_logging
 from models import init_caption_model
 
@@ -20,6 +21,8 @@ logger = logging.getLogger(__name__)
 if __name__ == '__main__':
     log_service_config()
     init_caption_model()
+
+    TaskProcessor.get_instance().start()
     
     host = os.getenv('HOST', '127.0.0.1')
     port = int(os.getenv('PORT', 5000))
